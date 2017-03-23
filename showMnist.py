@@ -115,8 +115,8 @@ if __name__ == '__main__':
 
     mnist = MNIST()
     print "read train images..."
-    mnist.read_train_images('./train-images-idx3-ubyte')
+    mnist.read_train_images('../caffe/data/mnist/train-images-idx3-ubyte')
 
     print "read train lebels..."
-    mnist.read_train_labels('./train-labels-idx1-ubyte')
+    mnist.read_train_labels('../caffe/data/mnist/train-labels-idx1-ubyte')
 
