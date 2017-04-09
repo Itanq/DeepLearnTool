@@ -92,3 +92,8 @@ def createTree(dataSet, labels):
         myTree[bestFeatureLabel][value] = createTree(splitDataSet(dataSet, bestFeature, value), subLabels)
 
     return myTree
+
+
+def classify(inputTree, featLabel, testVec):
+    firstStr = inputTree.keys()[0]
+    secondDict = inputTree[firstStr]

@@ -1,40 +1,46 @@
+#include <algorithm>
+#include <iosfwd>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-#include<map>
-#include<pair>
-#include<vector>
-#include<string>
-#include<iostream>
+#include <caffe/caffe.hpp>
 
-#include<opencv2/core/core.hpp>
-#include<opencv2/imgproc/imgproc.hpp>
-#include<opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
-#include<caffe/caffe.hpp>
-using namespace caffe;
+using namespace caffe;  // NOLINT(build/namespaces)
+using std::string;
 
-// 标签，得分
-typedef std::pair<std::string, float> Predction;
+/* Pair (label, confidence) representing a prediction. */
+typedef std::pair<string, float> Prediction;
 
-class ImageClassifier
-{
-    public:
-        ImageClassifier(const std::string& model_file, const std::string& train_filed,
-                        const std::string& mean_file,  const std::string label_file);
-        std::vector<Prediction> Classify(const cv::Mat& img, int, label);
+class Classifier {
+ public:
+  Classifier(const string& model_file,
+             const string& trained_file,
+             const string& mean_file,
+             const string& label_file);
 
-    private:
-        void SetMean(const std::string& mean_file);
-        std::vector<float> Predict(const cv::Mat& img);
-        void WrapInputLayer(std::vector<cv::Mat>* input_channels);
-        void Preprocess(const cv::Mat& img, std::vector<cv::Mat>* input_channels);
+  std::vector<Prediction> Classify(const cv::Mat& img, int N = 5);
 
-    private:
+ private:
+  void SetMean(const string& mean_file);
 
-        int         m_num_channels;
+  std::vector<float> Predict(const cv::Mat& img);
 
-        cv::Mat     m_mean;
-        cv::Size    m_input_geometry;
+  void WrapInputLayer(std::vector<cv::Mat>* input_channels);
 
-        shared_ptr< Net<float> > m_net;
-        std::vector<std::string> m_labels;
-}
+  void Preprocess(const cv::Mat& img,
+                  std::vector<cv::Mat>* input_channels);
+
+ private:
+  shared_ptr<Net<float> > net_;
+  cv::Size input_geometry_;
+  int num_channels_;
+  cv::Mat mean_;
+  std::vector<string> labels_;
+};
+
